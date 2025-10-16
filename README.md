@@ -6,13 +6,12 @@
 
 Core:
 
-- Next.js
-- TailwindCSS
+- Next.js BFF implementation
 
 UI:
 
 - MapBox GL JS
-- DaisyUI
+- shadcn/ui
 
 dev:
 
