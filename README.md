@@ -1,6 +1,7 @@
 # postcode_frontend
 
-> git@github.com:mfmasud/postcode_frontend.git
+A UI for the backend application found at:
+https://github.com/mfmasud/postcode_stats
 
 ## Stack:
 
