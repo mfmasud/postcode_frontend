@@ -7,11 +7,10 @@ https://github.com/mfmasud/postcode_stats
 
 Core:
 
-- Next.js BFF implementation
+- Next.js 15
 
 UI:
 
-- MapBox GL JS
 - shadcn/ui
 
 dev:
