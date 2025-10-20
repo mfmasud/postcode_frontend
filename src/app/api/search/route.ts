@@ -17,7 +17,9 @@ export async function GET(request: NextRequest) {
   // Validate the params
 
   // Pass the params to the backend API
-  const callRoute = `${BACKEND_URL}/?${searchParams.toString()}`;
+  const callRoute = `${BACKEND_URL}/search?${searchParams.toString()}`;
+  const response = await fetch(callRoute);
+  const data = await response.json();
 
   // Return the backend API result
   return { latitude, longitude };
@@ -31,6 +33,13 @@ export async function POST(request: Request) {
   // Validate the postcode
 
   // Pass the postcode as the request body to the backend API
+  const callRoute = `${BACKEND_URL}/search`;
+  const body = JSON.stringify({ postcode });
+  const response = await fetch(callRoute, {
+    method: "POST",
+    body,
+  });
+  const data = await response.json();
 
   // Return the backend API result
   return Response.json({ postcode });
