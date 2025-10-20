@@ -18,7 +18,7 @@ export async function searchByCoordinates(latitude: number, longitude: number) {
   }
 
   // Pass the params to the backend API
-  const url = `${BACKEND_URL}/search?latitude=${latitude}&longitude=${longitude}`;
+  const url = `http://${BACKEND_URL}/search?latitude=${latitude}&longitude=${longitude}`;
   const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) throw new Error("Failed to fetch geospatial data");
 
@@ -37,13 +37,18 @@ export async function searchByPostcode(formData: FormData) {
   // Validate the postcode
 
   // Pass the postcode as the request body to the backend API
-  const res = await fetch(`${BACKEND_URL}/search`, {
+  const res = await fetch(`http://${BACKEND_URL}/search`, {
     method: "POST",
     body: JSON.stringify({ postcode }),
     headers: { "Content-Type": "application/json" },
   });
 
+  //console.log(res);
+
   // Return the backend API result
   if (!res.ok) throw new Error("Backend search failed");
-  return res.json();
+
+  const data = await res.json();
+  //console.log(data);
+  return data;
 }
