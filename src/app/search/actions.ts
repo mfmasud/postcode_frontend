@@ -26,29 +26,51 @@ export async function searchByCoordinates(latitude: number, longitude: number) {
   return res.json();
 }
 
+// State type for search results
+export type SearchState = {
+  success: boolean;
+  data?: unknown;
+  error?: string;
+} | null;
+
 // Server Action: for POST via form or client action
-export async function searchByPostcode(formData: FormData) {
-  // Obtain the postcode from the form data to be used as the request body
-  const postcode = formData.get("postcode") as string;
-  if (!postcode || !/^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i.test(postcode)) {
-    throw new Error("Invalid UK postcode format");
+export async function searchByPostcode(
+  _prevState: SearchState,
+  formData: FormData
+): Promise<SearchState> {
+  try {
+    // Obtain the postcode from the form data to be used as the request body
+    const postcode = formData.get("postcode") as string;
+
+    // Validate the postcode
+
+    // Pass the postcode as the request body to the backend API
+    const res = await fetch(`http://${BACKEND_URL}/search`, {
+      method: "POST",
+      body: JSON.stringify({ postcode }),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    // Return the backend API result
+    if (!res.ok) {
+      return {
+        success: false,
+        error: "Backend API call failed",
+      };
+    }
+
+    const data = await res.json();
+    //console.log(data);
+
+    return {
+      success: true,
+      data,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error:
+        error instanceof Error ? error.message : "An unexpected error occurred",
+    };
   }
-
-  // Validate the postcode
-
-  // Pass the postcode as the request body to the backend API
-  const res = await fetch(`http://${BACKEND_URL}/search`, {
-    method: "POST",
-    body: JSON.stringify({ postcode }),
-    headers: { "Content-Type": "application/json" },
-  });
-
-  //console.log(res);
-
-  // Return the backend API result
-  if (!res.ok) throw new Error("Backend search failed");
-
-  const data = await res.json();
-  //console.log(data);
-  return data;
 }
