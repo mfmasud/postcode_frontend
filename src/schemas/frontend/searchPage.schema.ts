@@ -25,20 +25,24 @@ export const FrontendCrimeSchema = CrimeResponseSchema.omit({
  * Search metadata schema
  * Contains search context and location information
  *
- * Based on SearchAPIResponseSchema, except postcode (uses frontend schema instead)
+ * Based on SearchAPIResponseSchema, except Postcode (uses frontend schema instead)
  */
-export const SearchMetadataSchema = SearchAPIResponseSchema.pick({
-  searchID: true,
-  latitude: true,
-  longitude: true,
-  Northing: true,
-  Easting: true,
-  reverseLookup: true,
-}).extend({
-  postcode: FrontendPostcodeSchema.describe(
-    "Postcode details for the search location"
-  ),
-});
+export const SearchMetadataSchema = SearchAPIResponseSchema.omit({
+  Postcode: true,
+})
+  .pick({
+    searchID: true,
+    latitude: true,
+    longitude: true,
+    Northing: true,
+    Easting: true,
+    reverseLookup: true,
+  })
+  .extend({
+    Postcode: FrontendPostcodeSchema.describe(
+      "Postcode details for the search location"
+    ),
+  });
 
 /**
  * Organized frontend search response schema
