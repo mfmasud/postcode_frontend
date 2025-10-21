@@ -3,6 +3,7 @@ import {
   PostcodeResponseSchema,
   BusStopResponseSchema,
   CrimeResponseSchema,
+  SearchAPIResponseSchema,
 } from "@/schemas/backend/searchResponse.schema";
 
 export const FrontendPostcodeSchema = PostcodeResponseSchema.omit({
@@ -23,16 +24,17 @@ export const FrontendCrimeSchema = CrimeResponseSchema.omit({
 /**
  * Search metadata schema
  * Contains search context and location information
+ *
+ * Based on SearchAPIResponseSchema, except postcode (uses frontend schema instead)
  */
-export const SearchMetadataSchema = z.object({
-  searchID: z.number().describe("Unique sequential search identifier"),
-  latitude: z.number().describe("Latitude coordinate in WGS84 format"),
-  longitude: z.number().describe("Longitude coordinate in WGS84 format"),
-  Northing: z.string().describe("British National Grid Northing coordinate"),
-  Easting: z.string().describe("British National Grid Easting coordinate"),
-  reverseLookup: z
-    .boolean()
-    .describe("Whether this search was performed via reverse geocoding"),
+export const SearchMetadataSchema = SearchAPIResponseSchema.pick({
+  searchID: true,
+  latitude: true,
+  longitude: true,
+  Northing: true,
+  Easting: true,
+  reverseLookup: true,
+}).extend({
   postcode: FrontendPostcodeSchema.describe(
     "Postcode details for the search location"
   ),
@@ -53,7 +55,7 @@ export const SearchResponseSchema = z.object({
   ),
   queryBusStops: z
     .array(FrontendBusStopSchema)
-    .describe("Array of nearby bus stops (up to 5)"),
+    .describe("Array of nearby bus stops"),
   queryCrimes: z
     .array(FrontendCrimeSchema)
     .describe("Array of crimes in the area"),
