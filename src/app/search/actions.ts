@@ -8,6 +8,32 @@ Backend = process.env.BACKEND_URL
 
 const BACKEND_URL = process.env.BACKEND_URL;
 
+import {
+  type SearchResponse,
+  SearchBodySchema,
+  SearchResponseSchema,
+  type SearchAPIResponse,
+} from "@/schemas/search.schema";
+import { validatePostcode } from "@/schemas/request/SearchBody.schema";
+
+// Transform backend API response into the frontend SearchResponse shape
+function mapToFrontendSearchResponse(api: SearchAPIResponse): SearchResponse {
+  return {
+    metadata: {
+      searchID: api.searchID,
+      latitude: api.latitude,
+      longitude: api.longitude,
+      Northing: api.Northing,
+      Easting: api.Easting,
+      reverseLookup: api.reverseLookup,
+      Postcode: api.Postcode,
+    },
+    queryBusStops: api.queryBusStops,
+    queryCrimes: api.queryCrimes,
+  };
+}
+
+/*
 // Server Action: for GET-like use inside Server Components
 export async function searchByCoordinates(latitude: number, longitude: number) {
   // Obtain the query parameters as function parameters
@@ -25,46 +51,64 @@ export async function searchByCoordinates(latitude: number, longitude: number) {
   // Return the backend API result
   return res.json();
 }
+*/
 
 // State type for search results
-export type SearchState = {
+export type searchByPostcodeState = {
   success: boolean;
-  data?: unknown;
+  data?: SearchResponse;
   error?: string;
 } | null;
 
 // Server Action: for POST via form or client action
 export async function searchByPostcode(
-  _prevState: SearchState,
+  _prevState: searchByPostcodeState,
   formData: FormData
-): Promise<SearchState> {
+): Promise<searchByPostcodeState> {
   try {
     // Obtain the postcode from the form data to be used as the request body
     const postcode = formData.get("postcode") as string;
 
     // Validate the postcode
+    const normalisedPostcode = validatePostcode(postcode);
+    const validatedPostcode = SearchBodySchema.safeParse({
+      postcode: normalisedPostcode,
+    });
+    if (!validatedPostcode.success) {
+      return {
+        success: false,
+        error: validatedPostcode.error.message,
+      };
+    }
 
     // Pass the postcode as the request body to the backend API
     const res = await fetch(`http://${BACKEND_URL}/search`, {
       method: "POST",
-      body: JSON.stringify({ postcode }),
+      body: JSON.stringify({ postcode: normalisedPostcode }),
       headers: { "Content-Type": "application/json" },
     });
 
-    // Return the backend API result
+    // Return error if the backend API call fails
     if (!res.ok) {
       return {
         success: false,
-        error: "Backend API call failed",
+        error: "Backend API call failed or the entered postcode is invalid",
       };
     }
 
-    const data = await res.json();
-    //console.log(data);
-
+    // Validate and transform the backend API response to frontend schema
+    const data: SearchAPIResponse = (await res.json()) as SearchAPIResponse;
+    const transformed = mapToFrontendSearchResponse(data);
+    const parsed = SearchResponseSchema.safeParse(transformed);
+    if (!parsed.success) {
+      return {
+        success: false,
+        error: parsed.error.message,
+      };
+    }
     return {
       success: true,
-      data,
+      data: parsed.data,
     };
   } catch (error) {
     return {

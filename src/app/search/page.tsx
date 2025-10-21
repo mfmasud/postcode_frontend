@@ -1,13 +1,16 @@
 "use client";
 
 import { useActionState } from "react";
-import { searchByPostcode, type SearchState } from "@/app/search/actions";
+import {
+	searchByPostcode,
+	type searchByPostcodeState,
+} from "@/app/search/actions";
 
 export default function SearchPage() {
-	const [state, formAction, isPending] = useActionState<SearchState, FormData>(
-		searchByPostcode,
-		null,
-	);
+	const [state, formAction, isPending] = useActionState<
+		searchByPostcodeState,
+		FormData
+	>(searchByPostcode, null);
 
 	return (
 		<div className="space-y-4">

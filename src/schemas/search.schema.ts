@@ -7,5 +7,13 @@
  * @module schemas/search
  */
 
-export type { SearchAPIResponse } from "@/schemas/backend/searchResponse.schema";
-export type { SearchResponse } from "@/schemas/frontend/searchPage.schema";
+export {
+  SearchAPIResponseSchema,
+  type SearchAPIResponse,
+} from "@/schemas/backend/searchResponse.schema";
+export {
+  SearchResponseSchema,
+  type SearchResponse,
+  type FrontendPostcode,
+} from "@/schemas/frontend/searchPage.schema";
+export { SearchBodySchema } from "@/schemas/request/SearchBody.schema";
