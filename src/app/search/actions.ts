@@ -58,17 +58,18 @@ export type searchByPostcodeState = {
   success: boolean;
   data?: SearchResponse;
   error?: string;
-} | null;
+  entered_postcode: string;
+};
 
 // Server Action: for POST via form or client action
 export async function searchByPostcode(
   _prevState: searchByPostcodeState,
   formData: FormData
 ): Promise<searchByPostcodeState> {
-  try {
-    // Obtain the postcode from the form data to be used as the request body
-    const postcode = formData.get("postcode") as string;
+  // Obtain the postcode from the form data to be used as the request body
+  const postcode = formData.get("postcode") as string;
 
+  try {
     // Validate the postcode
     const normalisedPostcode = validatePostcode(postcode);
     const validatedPostcode = SearchBodySchema.safeParse({
@@ -78,6 +79,7 @@ export async function searchByPostcode(
       return {
         success: false,
         error: validatedPostcode.error.message,
+        entered_postcode: postcode,
       };
     }
 
@@ -97,6 +99,7 @@ export async function searchByPostcode(
         success: false,
         error:
           "Backend API call failed or the entered postcode is not a real UK postcode",
+        entered_postcode: postcode,
       };
     }
 
@@ -111,7 +114,8 @@ export async function searchByPostcode(
     if (!res.ok) {
       return {
         success: false,
-        error: "Backend API call failed or the entered postcode is invalid",
+        error: "Backend API call failed or the entered postcode is not active",
+        entered_postcode: postcode,
       };
     }
 
@@ -123,17 +127,20 @@ export async function searchByPostcode(
       return {
         success: false,
         error: parsed.error.message,
+        entered_postcode: postcode,
       };
     }
     return {
       success: true,
       data: parsed.data,
+      entered_postcode: postcode,
     };
   } catch (error) {
     return {
       success: false,
       error:
         error instanceof Error ? error.message : "An unexpected error occurred",
+      entered_postcode: postcode,
     };
   }
 }

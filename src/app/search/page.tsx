@@ -6,11 +6,18 @@ import {
 	type searchByPostcodeState,
 } from "@/app/search/actions";
 
+const initialState: searchByPostcodeState = {
+	success: false,
+	error: undefined,
+	data: undefined,
+	entered_postcode: "",
+};
+
 export default function SearchPage() {
 	const [state, formAction, isPending] = useActionState<
 		searchByPostcodeState,
 		FormData
-	>(searchByPostcode, null);
+	>(searchByPostcode, initialState);
 
 	return (
 		<div className="space-y-4">
@@ -21,6 +28,7 @@ export default function SearchPage() {
 					name="postcode"
 					type="text"
 					placeholder="Enter a valid UK postcode:"
+					defaultValue={state.entered_postcode ?? ""}
 					className="border p-2 rounded"
 					required
 				/>
