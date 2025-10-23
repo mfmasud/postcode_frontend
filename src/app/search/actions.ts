@@ -81,7 +81,26 @@ export async function searchByPostcode(
       };
     }
 
-    // Pass the postcode as the request body to the backend API
+    // Check if the semantically valid postcode is real UK one
+    // calls postcodes.io to check
+    const validationRes = await fetch(
+      `http://${BACKEND_URL}/postcodes/validate`,
+      {
+        method: "POST",
+        body: JSON.stringify({ postcode: normalisedPostcode }),
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
+    if (!validationRes.ok) {
+      return {
+        success: false,
+        error:
+          "Backend API call failed or the entered postcode is not a real UK postcode",
+      };
+    }
+
+    // Pass the postcode as the request body to the backend search API
     const res = await fetch(`http://${BACKEND_URL}/search`, {
       method: "POST",
       body: JSON.stringify({ postcode: normalisedPostcode }),
