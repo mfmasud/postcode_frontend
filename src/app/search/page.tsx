@@ -41,10 +41,17 @@ export default function SearchPage() {
 				</button>
 			</form>
 
-			{state?.success === false && (
+			{state.error !== undefined && (
 				<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
 					<p className="font-semibold">Error</p>
-					<p>{state.error}</p>
+					<p>{state.error?.msg}</p>
+					{state.error?.issues && (
+						<ul>
+							{state.error.issues.map((issue) => (
+								<li key={issue}>{issue}</li>
+							))}
+						</ul>
+					)}
 				</div>
 			)}
 

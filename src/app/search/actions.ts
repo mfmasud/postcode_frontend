@@ -16,6 +16,8 @@ import {
 } from "@/schemas/search.schema";
 import { validatePostcode } from "@/schemas/request/SearchBody.schema";
 
+import { type ActionError, parseZodError } from "@/schemas/error/ActionError";
+
 // Transform backend API response into the frontend SearchResponse shape
 function mapToFrontendSearchResponse(api: SearchAPIResponse): SearchResponse {
   return {
@@ -57,7 +59,7 @@ export async function searchByCoordinates(latitude: number, longitude: number) {
 export type searchByPostcodeState = {
   success: boolean;
   data?: SearchResponse;
-  error?: string;
+  error?: ActionError;
   entered_postcode: string;
 };
 
@@ -78,7 +80,7 @@ export async function searchByPostcode(
     if (!validatedPostcode.success) {
       return {
         success: false,
-        error: validatedPostcode.error.message,
+        error: parseZodError(validatedPostcode.error),
         entered_postcode: postcode,
       };
     }
@@ -97,8 +99,10 @@ export async function searchByPostcode(
     if (!validationRes.ok) {
       return {
         success: false,
-        error:
-          "Backend API call failed or the entered postcode is not a real UK postcode",
+        error: {
+          msg: "Backend API call failed or the entered postcode is not a real UK postcode",
+          issues: undefined,
+        },
         entered_postcode: postcode,
       };
     }
@@ -114,7 +118,10 @@ export async function searchByPostcode(
     if (!res.ok) {
       return {
         success: false,
-        error: "Backend API call failed or the entered postcode is not active",
+        error: {
+          msg: "Backend API call failed or the entered postcode is not active",
+          issues: undefined,
+        },
         entered_postcode: postcode,
       };
     }
@@ -126,7 +133,7 @@ export async function searchByPostcode(
     if (!parsed.success) {
       return {
         success: false,
-        error: parsed.error.message,
+        error: parseZodError(parsed.error),
         entered_postcode: postcode,
       };
     }
@@ -138,8 +145,13 @@ export async function searchByPostcode(
   } catch (error) {
     return {
       success: false,
-      error:
-        error instanceof Error ? error.message : "An unexpected error occurred",
+      error: {
+        msg:
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred",
+        issues: undefined,
+      },
       entered_postcode: postcode,
     };
   }
