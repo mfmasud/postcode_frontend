@@ -101,7 +101,7 @@ export async function searchByPostcode(
         success: false,
         error: {
           msg: "Backend API call failed or the entered postcode is not a real UK postcode",
-          issues: undefined,
+          pretty: undefined,
         },
         entered_postcode: postcode,
       };
@@ -120,7 +120,7 @@ export async function searchByPostcode(
         success: false,
         error: {
           msg: "Backend API call failed or the entered postcode is not active",
-          issues: undefined,
+          pretty: undefined,
         },
         entered_postcode: postcode,
       };
@@ -150,7 +150,7 @@ export async function searchByPostcode(
           error instanceof Error
             ? error.message
             : "An unexpected error occurred",
-        issues: undefined,
+        pretty: undefined,
       },
       entered_postcode: postcode,
     };
