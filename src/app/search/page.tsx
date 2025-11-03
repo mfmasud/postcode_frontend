@@ -5,6 +5,7 @@ import {
 	searchByPostcode,
 	type searchByPostcodeState,
 } from "@/app/search/actions";
+import { PostcodeSearchBox } from "@/components/PostcodeSearchBox";
 
 const initialState: searchByPostcodeState = {
 	success: false,
@@ -23,23 +24,11 @@ export default function SearchPage() {
 		<div className="space-y-4">
 			<h1 className="text-2xl font-semibold">Search</h1>
 
-			<form action={formAction} className="space-x-2">
-				<input
-					name="postcode"
-					type="text"
-					placeholder="Enter a valid UK postcode:"
-					defaultValue={state.entered_postcode ?? ""}
-					className="border p-2 rounded"
-					required
-				/>
-				<button
-					type="submit"
-					disabled={isPending}
-					className="bg-blue-600 text-white px-4 py-2 rounded"
-				>
-					{isPending ? "Searching..." : "Search"}
-				</button>
-			</form>
+			<PostcodeSearchBox
+				formAction={formAction}
+				isPending={isPending}
+				defaultValue={state.entered_postcode ?? ""}
+			/>
 
 			{state.error !== undefined && (
 				<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
