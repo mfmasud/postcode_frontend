@@ -187,4 +187,9 @@
     @apply bg-background text-foreground;
     letter-spacing: var(--tracking-normal);
   }
+  .leaflet-container {
+    width: 100vh;
+    height: 100vh;
+    min-height: 400px;
+  }
 }
