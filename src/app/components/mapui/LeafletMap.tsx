@@ -1,17 +1,35 @@
 "use client";
 
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import type { LatLngExpression } from "leaflet";
 
-export default function LeafletMap() {
-	const position: LatLngExpression = [51.505, -0.09];
+interface LeafletMapProps {
+	center?: LatLngExpression;
+	zoom?: number;
+	markers?: Array<{
+		position: LatLngExpression;
+		popup?: string;
+	}>;
+}
 
+export default function LeafletMap({
+	center = [51.505, -0.09],
+	zoom = 13,
+	markers,
+}: LeafletMapProps) {
 	return (
-		<MapContainer center={position} zoom={13} scrollWheelZoom={false}>
-			<TileLayer
-				attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-				url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-			/>
-		</MapContainer>
+		<div className="overflow-hidden h-full w-full">
+			<MapContainer center={center} zoom={zoom} scrollWheelZoom={false}>
+				<TileLayer
+					attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+				/>
+				{markers?.map((marker) => (
+					<Marker key={marker.position.toString()} position={marker.position}>
+						{marker.popup && <Popup>{marker.popup}</Popup>}
+					</Marker>
+				))}
+			</MapContainer>
+		</div>
 	);
 }
