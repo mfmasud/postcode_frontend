@@ -30,7 +30,7 @@ export default function MapApplication() {
 					</p>
 				</header>
 
-				<div className="grid gap-6 grid-cols-5">
+				<div className="grid gap-6 grid-cols-1 lg:grid-cols-5">
 					{/* Sidebar */}
 					<aside className="space-y-4 col-span-1">
 						<Card className="p-4">
@@ -51,8 +51,8 @@ export default function MapApplication() {
 					</aside>
 
 					{/* Main Content */}
-					<div className="space-y-6 col-span-4">
-						<Card>
+					<div className="space-y-6 col-span-1 lg:col-span-4">
+						<Card className="h-[500px] overflow-hidden p-1">
 							<Suspense
 								fallback={
 									<div className="flex items-center justify-center bg-muted/20">
@@ -66,7 +66,7 @@ export default function MapApplication() {
 					</div>
 
 					{/* Location Table */}
-					<div className="col-span-5">
+					<div className="col-span-1 lg:col-span-5">
 						<Card className="p-6">
 							<h2 className="text-xl font-semibold mb-4">Location Data</h2>
 							<Suspense
