@@ -5,7 +5,7 @@ import {
 	searchByPostcode,
 	type searchByPostcodeState,
 } from "@/app/search/actions";
-import { PostcodeSearchBox } from "@/components/PostcodeSearchBox";
+import { PostcodeSearchBox } from "@/app/components/myui/PostcodeSearchBox";
 
 const initialState: searchByPostcodeState = {
 	success: false,
