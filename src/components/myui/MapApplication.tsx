@@ -13,7 +13,7 @@ import { PostcodeSearchBox } from "./PostcodeSearchBox";
 import {
 	searchByPostcode,
 	type searchByPostcodeState,
-} from "@/app/search/actions";
+} from "@/app/actions/SearchAction";
 
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
