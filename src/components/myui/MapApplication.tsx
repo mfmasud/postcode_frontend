@@ -1,37 +1,53 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useActionState } from "react";
 import dynamic from "next/dynamic";
 
 const LeafletMap = dynamic(() => import("../mapui/LeafletMap"), {
 	ssr: false,
 });
-import { DataTable } from "@/components/mapui/DataTable";
 
-import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/mapui/DataTable";
+import { PostcodeSearchBox } from "./PostcodeSearchBox";
+
+import {
+	searchByPostcode,
+	type searchByPostcodeState,
+} from "@/app/search/actions";
+
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Database } from "lucide-react";
 
+const initialState: searchByPostcodeState = {
+	success: false,
+	error: undefined,
+	data: undefined,
+	entered_postcode: "",
+};
+
 export default function MapApplication() {
+	const [state, formAction, isPending] = useActionState<
+		searchByPostcodeState,
+		FormData
+	>(searchByPostcode, initialState);
+
 	return (
 		<div className="grid gap-6 grid-cols-1 lg:grid-cols-5">
 			{/* Sidebar */}
 			<aside className="space-y-4 col-span-1">
-				<Card className="p-4">
+				<Card className="p-4 flex flex-col">
 					<h2 className="font-semibold mb-4 flex items-center gap-2">
 						<Database className="h-4 w-4" />
 						Data Controls
 					</h2>
-					<Button className="w-full" size="lg">
-						Fetch Location Data
-					</Button>
-				</Card>
-
-				<Card className="p-4">
-					<h2 className="font-semibold mb-4 flex items-center gap-2">
-						Search for a postcode (coming soon)
-					</h2>
+					<div>
+						<PostcodeSearchBox
+							formAction={formAction}
+							isPending={isPending}
+							defaultValue={state.entered_postcode ?? ""}
+						/>
+					</div>
 				</Card>
 			</aside>
 
@@ -65,6 +81,28 @@ export default function MapApplication() {
 					</Suspense>
 				</Card>
 			</div>
+
+			{state.error !== undefined && (
+				<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+					<p className="font-semibold">Error</p>
+					{state.error?.pretty ? (
+						<pre className="whitespace-pre-wrap font-mono text-sm">
+							{state.error.pretty}
+						</pre>
+					) : (
+						<p>{state.error?.msg}</p>
+					)}
+				</div>
+			)}
+
+			{state?.success === true && state.data !== undefined && (
+				<div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded col-span-5">
+					<p className="font-semibold mb-2">Success</p>
+					<pre className="bg-white p-4 rounded overflow-x-auto text-gray-800">
+						{JSON.stringify(state.data as Record<string, unknown>, null, 2)}
+					</pre>
+				</div>
+			)}
 		</div>
 	);
 }
