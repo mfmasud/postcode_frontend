@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-import Header from "@/app/components/myui/Header";
-import Footer from "@/app/components/myui/Footer";
+import Header from "@/components/myui/Header";
+import Footer from "@/components/myui/Footer";
 
 export const metadata: Metadata = {
 	title: "Postcode Stats API",

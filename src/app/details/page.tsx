@@ -3,10 +3,10 @@
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 
-const LeafletMap = dynamic(() => import("../components/mapui/LeafletMap"), {
+const LeafletMap = dynamic(() => import("../../components/mapui/LeafletMap"), {
 	ssr: false,
 });
-import { DataTable } from "@/app/components/mapui/DataTable";
+import { DataTable } from "@/components/mapui/DataTable";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";

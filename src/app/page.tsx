@@ -1,4 +1,4 @@
-import HomeContent from "@/app/components/myui/HomeContent";
+import HomeContent from "@/components/myui/HomeContent";
 
 export default function Home() {
 	return (
