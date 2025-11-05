@@ -8,18 +8,17 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 
-interface LocationData {
-	id: string;
+export interface DataTableRow {
+	id: number;
 	postcode: string;
-	lat: number;
-	long: number;
-	type: string;
+	hasNPTG: boolean;
+	hasCrimes: boolean;
 }
 
 type DataTableProps = {
-	data: LocationData[];
+	data: DataTableRow[];
 };
 
 export function DataTable({ data }: DataTableProps) {
@@ -37,26 +36,26 @@ export function DataTable({ data }: DataTableProps) {
 			<Table>
 				<TableHeader>
 					<TableRow>
+						<TableHead>SearchID</TableHead>
 						<TableHead>Postcode</TableHead>
-						<TableHead>Latitude</TableHead>
-						<TableHead>Longitude</TableHead>
-						<TableHead>Type</TableHead>
+						<TableHead>Show Bus Stops</TableHead>
+						<TableHead>Show Recent Crimes</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					{data.map((location) => (
-						<TableRow key={location.id}>
+					{data.map((rowdata: DataTableRow) => (
+						<TableRow key={rowdata.id}>
 							<TableCell className="font-mono font-medium">
-								{location.postcode}
+								{rowdata.id}
 							</TableCell>
 							<TableCell className="font-mono text-muted-foreground">
-								{location.lat.toFixed(4)}
+								{rowdata.postcode}
 							</TableCell>
 							<TableCell className="font-mono text-muted-foreground">
-								{location.long.toFixed(4)}
+								<Checkbox checked={rowdata.hasNPTG} disabled />
 							</TableCell>
-							<TableCell>
-								<Badge variant="default">{location.type}</Badge>
+							<TableCell className="font-mono text-muted-foreground">
+								<Checkbox checked={rowdata.hasCrimes} disabled />
 							</TableCell>
 						</TableRow>
 					))}
