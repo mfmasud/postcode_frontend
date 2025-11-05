@@ -7,7 +7,7 @@ const LeafletMap = dynamic(() => import("../mapui/LeafletMap"), {
 	ssr: false,
 });
 
-import { DataTable } from "@/components/mapui/DataTable";
+import { DataTable, type DataTableRow } from "@/components/mapui/DataTable";
 import { PostcodeSearchBox } from "./PostcodeSearchBox";
 
 import {
@@ -18,6 +18,7 @@ import {
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Database } from "lucide-react";
+import { mapSearchResponseToRow } from "@/lib/SearchDataTable";
 
 const initialState: searchByPostcodeState = {
 	success: false,
@@ -31,6 +32,8 @@ export default function MapApplication() {
 		searchByPostcodeState,
 		FormData
 	>(searchByPostcode, initialState);
+
+	const tabledata: DataTableRow = mapSearchResponseToRow(state.data);
 
 	return (
 		<div className="grid gap-6 grid-cols-1 lg:grid-cols-5">
@@ -77,7 +80,7 @@ export default function MapApplication() {
 							</div>
 						}
 					>
-						<DataTable data={[]} />
+						<DataTable data={[tabledata]} />
 					</Suspense>
 				</Card>
 			</div>
