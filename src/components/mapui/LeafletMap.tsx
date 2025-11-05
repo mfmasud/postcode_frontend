@@ -5,7 +5,7 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import type { LatLngExpression } from "leaflet";
 
 interface LeafletMapProps {
-	center?: LatLngExpression;
+	center: LatLngExpression;
 	zoom?: number;
 	markers?: Array<{
 		position: LatLngExpression;
@@ -14,7 +14,7 @@ interface LeafletMapProps {
 }
 
 export default function LeafletMap({
-	center = [51.505, -0.09],
+	center,
 	zoom = 13,
 	markers,
 }: LeafletMapProps) {

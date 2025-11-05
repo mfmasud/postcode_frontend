@@ -19,6 +19,7 @@ import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Database } from "lucide-react";
 import { mapSearchResponseToRow } from "@/lib/SearchDataTable";
+import type { LatLngExpression } from "leaflet";
 
 const initialState: searchByPostcodeState = {
 	success: false,
@@ -34,6 +35,11 @@ export default function MapApplication() {
 	>(searchByPostcode, initialState);
 
 	const tabledata: DataTableRow | null = mapSearchResponseToRow(state.data);
+	const mapcenter: LatLngExpression =
+		state.data?.metadata.latitude !== undefined &&
+		state.data?.metadata.longitude !== undefined
+			? [state.data.metadata.latitude, state.data.metadata.longitude]
+			: [51.505, -0.09];
 
 	return (
 		<div className="grid gap-6 grid-cols-1 lg:grid-cols-5">
@@ -64,7 +70,7 @@ export default function MapApplication() {
 							</div>
 						}
 					>
-						<LeafletMap />
+						<LeafletMap center={mapcenter} />
 					</Suspense>
 				</Card>
 			</div>
