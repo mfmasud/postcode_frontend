@@ -10,6 +10,7 @@ export function mapSearchResponseToRow(
       postcode: resp.metadata.Postcode.postcode,
       lat: resp.metadata.latitude,
       long: resp.metadata.longitude,
+      country: resp.metadata.Postcode.country,
     };
   }
   return null;

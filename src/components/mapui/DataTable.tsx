@@ -9,12 +9,14 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 
 export interface DataTableRow {
 	id: number;
 	postcode: string;
 	lat: number;
 	long: number;
+	country: string;
 }
 
 type DataTableProps = {
@@ -36,10 +38,14 @@ export function DataTable({ data }: DataTableProps) {
 			<Table>
 				<TableHeader>
 					<TableRow>
-						<TableHead>SearchID</TableHead>
 						<TableHead>Postcode</TableHead>
-						<TableHead>Show Bus Stops</TableHead>
+						<TableHead>Latitude</TableHead>
+						<TableHead>Longitude</TableHead>
+						<TableHead>Country</TableHead>
+						<TableHead className="w-[160px]"></TableHead> {/* spacer */}
+						<TableHead>Show Transport Nodes</TableHead>
 						<TableHead>Show Recent Crimes</TableHead>
+						<TableHead>View Postcode Data</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -55,7 +61,17 @@ export function DataTable({ data }: DataTableProps) {
 								{rowdata.long}
 							</TableCell>
 							<TableCell className="font-mono text-muted-foreground">
-								<Checkbox />
+								{rowdata.country}
+							</TableCell>
+							<TableCell></TableCell>
+							<TableCell className="align-middle">
+								<Checkbox /> Toggle Nodes
+							</TableCell>
+							<TableCell className="">
+								<Checkbox /> Toggle Crimes
+							</TableCell>
+							<TableCell className="">
+								<Button>Click to view</Button>
 							</TableCell>
 						</TableRow>
 					))}
