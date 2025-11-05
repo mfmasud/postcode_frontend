@@ -42,10 +42,11 @@ export function DataTable({ data }: DataTableProps) {
 						<TableHead>Latitude</TableHead>
 						<TableHead>Longitude</TableHead>
 						<TableHead>Country</TableHead>
-						<TableHead className="w-[160px]"></TableHead> {/* spacer */}
+						<TableHead className="w-[160px]"></TableHead>
 						<TableHead>Show Transport Nodes</TableHead>
 						<TableHead>Show Recent Crimes</TableHead>
 						<TableHead>View Postcode Data</TableHead>
+						<TableHead>Focus on Map</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -72,6 +73,9 @@ export function DataTable({ data }: DataTableProps) {
 							</TableCell>
 							<TableCell className="">
 								<Button>Click to view</Button>
+							</TableCell>
+							<TableCell className="">
+								<Button>Focus</Button>
 							</TableCell>
 						</TableRow>
 					))}
