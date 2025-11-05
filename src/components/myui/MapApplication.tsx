@@ -33,7 +33,7 @@ export default function MapApplication() {
 		FormData
 	>(searchByPostcode, initialState);
 
-	const tabledata: DataTableRow = mapSearchResponseToRow(state.data);
+	const tabledata: DataTableRow | null = mapSearchResponseToRow(state.data);
 
 	return (
 		<div className="grid gap-6 grid-cols-1 lg:grid-cols-5">
@@ -80,7 +80,7 @@ export default function MapApplication() {
 							</div>
 						}
 					>
-						<DataTable data={[tabledata]} />
+						<DataTable data={tabledata ? [tabledata] : []} />
 					</Suspense>
 				</Card>
 			</div>

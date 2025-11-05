@@ -13,16 +13,16 @@ import { Checkbox } from "@/components/ui/checkbox";
 export interface DataTableRow {
 	id: number;
 	postcode: string;
-	hasNPTG: boolean;
-	hasCrimes: boolean;
+	lat: number;
+	long: number;
 }
 
 type DataTableProps = {
-	data: DataTableRow[];
+	data: DataTableRow[] | null;
 };
 
 export function DataTable({ data }: DataTableProps) {
-	if (data.length === 0) {
+	if (data === null || data?.length === 0) {
 		return (
 			<div className="text-center py-8 text-muted-foreground">
 				No data to display. Search for a postcode to view data for that
@@ -46,16 +46,16 @@ export function DataTable({ data }: DataTableProps) {
 					{data.map((rowdata: DataTableRow) => (
 						<TableRow key={rowdata.id}>
 							<TableCell className="font-mono font-medium">
-								{rowdata.id}
-							</TableCell>
-							<TableCell className="font-mono text-muted-foreground">
 								{rowdata.postcode}
 							</TableCell>
 							<TableCell className="font-mono text-muted-foreground">
-								<Checkbox checked={rowdata.hasNPTG} disabled />
+								{rowdata.lat}
 							</TableCell>
 							<TableCell className="font-mono text-muted-foreground">
-								<Checkbox checked={rowdata.hasCrimes} disabled />
+								{rowdata.long}
+							</TableCell>
+							<TableCell className="font-mono text-muted-foreground">
+								<Checkbox />
 							</TableCell>
 						</TableRow>
 					))}

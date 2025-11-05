@@ -3,13 +3,16 @@ import type { DataTableRow } from "@/components/mapui/DataTable";
 
 export function mapSearchResponseToRow(
   resp: SearchResponse | undefined
-): DataTableRow {
-  return {
-    id: 123,
-    postcode: "test",
-    hasNPTG: true,
-    hasCrimes: false,
-  };
+): DataTableRow | null {
+  if (resp !== undefined && resp !== null) {
+    return {
+      id: resp.metadata.searchID,
+      postcode: resp.metadata.Postcode.postcode,
+      lat: resp.metadata.latitude,
+      long: resp.metadata.longitude,
+    };
+  }
+  return null;
 }
 
 export function mergeRowsDedup(
