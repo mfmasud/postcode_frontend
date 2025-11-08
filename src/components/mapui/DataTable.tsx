@@ -24,7 +24,7 @@ type DataTableProps = {
 };
 
 export function DataTable({ data }: DataTableProps) {
-	if (data === null || data?.length === 0) {
+	if (!data || data.length === 0) {
 		return (
 			<div className="text-center py-8 text-muted-foreground">
 				No data to display. Search for a postcode to view data for that
@@ -50,7 +50,7 @@ export function DataTable({ data }: DataTableProps) {
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					{data.map((rowdata: DataTableRow) => (
+					{data.map((rowdata) => (
 						<TableRow key={rowdata.id}>
 							<TableCell className="font-mono font-medium">
 								{rowdata.postcode}

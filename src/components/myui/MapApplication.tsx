@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useActionState } from "react";
+import { Suspense, useActionState, useEffect } from "react";
 import dynamic from "next/dynamic";
 
 const LeafletMap = dynamic(() => import("../mapui/LeafletMap"), {
@@ -15,10 +15,12 @@ import {
 	type searchByPostcodeState,
 } from "@/app/actions/SearchAction";
 
+import { useSearchStore } from "@/stores/searchStore";
+import { mapSearchResponseToRow } from "@/lib/SearchDataTable";
+
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Database } from "lucide-react";
-import { mapSearchResponseToRow } from "@/lib/SearchDataTable";
 import type { LatLngExpression } from "leaflet";
 
 const initialState: searchByPostcodeState = {
@@ -34,12 +36,26 @@ export default function MapApplication() {
 		FormData
 	>(searchByPostcode, initialState);
 
-	const tabledata: DataTableRow | null = mapSearchResponseToRow(state.data);
-	const mapcenter: LatLngExpression =
-		state.data?.metadata.latitude !== undefined &&
-		state.data?.metadata.longitude !== undefined
-			? [state.data.metadata.latitude, state.data.metadata.longitude]
-			: [51.505, -0.09];
+	const { add } = useSearchStore();
+
+	useEffect(() => {
+		if (state.success && state.data) {
+			// store the successful search result in Zustand
+			add(state.data);
+		}
+	}, [state.success, state.data, add]);
+
+	const itemsMap = useSearchStore((state) => state.items);
+	/*
+	for Object.values(itemsMap) (savedSearch) {
+		rows.append mapSearchResponseToRow(savedSearch)
+	}
+	const tabledata: DataTableRow[] = rows
+	*/
+	const tabledata: DataTableRow[] = Object.values(itemsMap).map((savedSearch) =>
+		mapSearchResponseToRow(savedSearch),
+	);
+	const mapcenter: LatLngExpression = [51.505, -0.09]; // add state and re-render
 
 	return (
 		<div className="grid gap-6 grid-cols-1 lg:grid-cols-5">
@@ -86,7 +102,7 @@ export default function MapApplication() {
 							</div>
 						}
 					>
-						<DataTable data={tabledata ? [tabledata] : []} />
+						<DataTable data={tabledata} />
 					</Suspense>
 				</Card>
 			</div>

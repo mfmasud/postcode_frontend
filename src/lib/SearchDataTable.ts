@@ -1,26 +1,15 @@
 import type { SearchResponse } from "@/schemas/search.schema";
 import type { DataTableRow } from "@/components/mapui/DataTable";
 
-export function mapSearchResponseToRow(
-  resp: SearchResponse | undefined
-): DataTableRow | null {
-  if (resp !== undefined && resp !== null) {
-    return {
-      id: resp.metadata.searchID,
-      postcode: resp.metadata.Postcode.postcode,
-      lat: resp.metadata.latitude,
-      long: resp.metadata.longitude,
-      country: resp.metadata.Postcode.country,
-    };
-  }
-  return null;
-}
+export function mapSearchResponseToRow(resp: SearchResponse): DataTableRow {
+  const { metadata } = resp;
+  const { Postcode } = metadata;
 
-export function mergeRowsDedup(
-  existing: DataTableRow[],
-  incoming: DataTableRow
-): DataTableRow[] {
-  const seen = new Set(existing.map((r) => r.id));
-  if (seen.has(incoming.id)) return existing;
-  return [...existing, incoming];
+  return {
+    id: metadata.searchID,
+    postcode: Postcode.postcode,
+    lat: metadata.latitude,
+    long: metadata.longitude,
+    country: Postcode.country,
+  };
 }
