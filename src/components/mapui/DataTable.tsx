@@ -11,7 +11,6 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import {
-	type ColumnDef,
 	flexRender,
 	getCoreRowModel,
 	useReactTable,
@@ -19,7 +18,7 @@ import {
 	type SortingState,
 	getExpandedRowModel,
 } from "@tanstack/react-table";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import type {
 	FrontendBusStop,
 	FrontendCrime,
@@ -49,77 +48,79 @@ export function DataTable({ data }: DataTableProps) {
 
 	const columnHelper = createColumnHelper<DataTableRow>();
 
-	// eslint-disable-next-line  @typescript-eslint/no-explicit-any  -- any required for tanstack table accessor
-	const columns: ColumnDef<DataTableRow, any>[] = [
-		columnHelper.accessor("postcode", {
-			header: "Postcode",
-			cell: (info) => (
-				<span className="font-mono font-medium">{info.getValue()}</span>
-			),
-		}),
-		columnHelper.accessor("lat", {
-			header: "Latitude",
-			cell: (info) => (
-				<span className="font-mono text-muted-foreground">
-					{info.getValue()}
-				</span>
-			),
-		}),
-		columnHelper.accessor("long", {
-			header: "Longitude",
-			cell: (info) => (
-				<span className="font-mono text-muted-foreground">
-					{info.getValue()}
-				</span>
-			),
-		}),
-		columnHelper.accessor("country", {
-			header: "Country",
-			cell: (info) => (
-				<span className="font-mono text-muted-foreground">
-					{info.getValue()}
-				</span>
-			),
-		}),
-		columnHelper.display({
-			id: "toggleNodes",
-			header: "Show Transport Nodes",
-			cell: () => (
-				<div className="align-middle">
-					<Checkbox disabled={!queryStops} /> Toggle Nodes
-				</div>
-			),
-		}),
-		columnHelper.display({
-			id: "toggleCrimes",
-			header: "Show Recent Crimes",
-			cell: () => (
-				<div className="">
-					<Checkbox disabled={!queryCrimes} /> Toggle Crimes
-				</div>
-			),
-		}),
-		columnHelper.display({
-			id: "viewData",
-			header: "View Postcode Data",
-			cell: ({ row }) => (
-				<div className="">
-					<Button onClick={row.getToggleExpandedHandler()}>
-						{row.getIsExpanded() ? "Hide Details" : "Click to view"}
-					</Button>
-				</div>
-			),
-		}),
-		columnHelper.display({
-			id: "focusMap",
-			header: "Focus on Map",
-			cell: () => (
-				<div className="">
-					<Button>Focus</Button>
-				</div>
-			),
-		}),
-	];
+	const columns = useMemo(
+		() => [
+			columnHelper.accessor("postcode", {
+				header: "Postcode",
+				cell: (info) => (
+					<span className="font-mono font-medium">{info.getValue()}</span>
+				),
+			}),
+			columnHelper.accessor("lat", {
+				header: "Latitude",
+				cell: (info) => (
+					<span className="font-mono text-muted-foreground">
+						{info.getValue()}
+					</span>
+				),
+			}),
+			columnHelper.accessor("long", {
+				header: "Longitude",
+				cell: (info) => (
+					<span className="font-mono text-muted-foreground">
+						{info.getValue()}
+					</span>
+				),
+			}),
+			columnHelper.accessor("country", {
+				header: "Country",
+				cell: (info) => (
+					<span className="font-mono text-muted-foreground">
+						{info.getValue()}
+					</span>
+				),
+			}),
+			columnHelper.display({
+				id: "toggleNodes",
+				header: "Show Transport Nodes",
+				cell: () => (
+					<div className="align-middle">
+						<Checkbox disabled={!queryStops} /> Toggle Nodes
+					</div>
+				),
+			}),
+			columnHelper.display({
+				id: "toggleCrimes",
+				header: "Show Recent Crimes",
+				cell: () => (
+					<div className="">
+						<Checkbox disabled={!queryCrimes} /> Toggle Crimes
+					</div>
+				),
+			}),
+			columnHelper.display({
+				id: "viewData",
+				header: "View Postcode Data",
+				cell: ({ row }) => (
+					<div className="">
+						<Button onClick={row.getToggleExpandedHandler()}>
+							{row.getIsExpanded() ? "Hide Details" : "Click to view"}
+						</Button>
+					</div>
+				),
+			}),
+			columnHelper.display({
+				id: "focusMap",
+				header: "Focus on Map",
+				cell: () => (
+					<div className="">
+						<Button>Focus</Button>
+					</div>
+				),
+			}),
+		],
+		[queryCrimes, queryStops, columnHelper], // Dependencies for useMemo
+	);
 
 	const table = useReactTable({
 		data: data || [],
