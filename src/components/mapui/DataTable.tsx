@@ -49,6 +49,7 @@ export function DataTable({ data }: DataTableProps) {
 
 	const columnHelper = createColumnHelper<DataTableRow>();
 
+	// eslint-disable-next-line  @typescript-eslint/no-explicit-any  -- any required for tanstack table accessor
 	const columns: ColumnDef<DataTableRow, any>[] = [
 		columnHelper.accessor("postcode", {
 			header: "Postcode",
