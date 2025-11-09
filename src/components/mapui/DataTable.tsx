@@ -23,6 +23,7 @@ import type {
 	FrontendBusStop,
 	FrontendCrime,
 } from "@/schemas/frontend/searchPage.schema";
+import React from "react";
 
 export interface DataTableRow {
 	id: number;
@@ -163,7 +164,7 @@ export function DataTable({ data }: DataTableProps) {
 				</TableHeader>
 				<TableBody>
 					{table.getRowModel().rows.map((row) => (
-						<>
+						<React.Fragment key={row.id}>
 							<TableRow key={row.id}>
 								{row.getVisibleCells().map((cell) => (
 									<TableCell key={cell.id}>
@@ -198,7 +199,7 @@ export function DataTable({ data }: DataTableProps) {
 									</TableCell>
 								</TableRow>
 							)}
-						</>
+						</React.Fragment>
 					))}
 				</TableBody>
 			</Table>
