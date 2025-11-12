@@ -21,7 +21,7 @@ import { mapSearchResponseToRow } from "@/lib/SearchDataTable";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Database } from "lucide-react";
-import type { LatLngExpression } from "leaflet";
+import { useMapStore } from "@/stores/mapStore";
 
 const initialState: searchByPostcodeState = {
 	success: false,
@@ -37,13 +37,31 @@ export default function MapApplication() {
 	>(searchByPostcode, initialState);
 
 	const { add } = useSearchStore();
+	const { setCenter, setZoom, setMarkers } = useMapStore();
 
 	useEffect(() => {
 		if (state.success && state.data) {
 			// store the successful search result in Zustand
 			add(state.data);
 		}
-	}, [state.success, state.data, add]);
+
+		if (state.success && state.data) {
+			setMarkers([
+				{
+					position: [
+						state.data.metadata.Postcode.latitude,
+						state.data.metadata.Postcode.longitude,
+					],
+					popup: state.data.metadata.Postcode.postcode,
+				},
+			]);
+			setCenter([
+				state.data.metadata.Postcode.latitude,
+				state.data.metadata.Postcode.longitude,
+			]);
+			setZoom(13);
+		}
+	}, [state.success, state.data, add, setMarkers, setCenter, setZoom]);
 
 	const itemsMap = useSearchStore((state) => state.items);
 	/*
@@ -55,7 +73,7 @@ export default function MapApplication() {
 	const tabledata: DataTableRow[] = Object.values(itemsMap).map((savedSearch) =>
 		mapSearchResponseToRow(savedSearch),
 	);
-	const mapcenter: LatLngExpression = [51.505, -0.09]; // add state and re-render
+	// Removed: const { center, zoom } = useMapStore();
 
 	return (
 		<div className="grid gap-6 grid-cols-1 lg:grid-cols-5">
@@ -86,7 +104,7 @@ export default function MapApplication() {
 							</div>
 						}
 					>
-						<LeafletMap center={mapcenter} />
+						<LeafletMap />
 					</Suspense>
 				</Card>
 			</div>
