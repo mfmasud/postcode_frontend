@@ -11,5 +11,7 @@ export function mapSearchResponseToRow(resp: SearchResponse): DataTableRow {
     lat: metadata.latitude,
     long: metadata.longitude,
     country: Postcode.country,
+    crimes: resp.queryCrimes ?? null,
+    stops: resp.queryBusStops ?? null,
   };
 }
