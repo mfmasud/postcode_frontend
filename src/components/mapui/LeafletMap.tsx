@@ -4,21 +4,44 @@ import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useMapStore } from "@/stores/mapStore";
 import { useRef, useEffect } from "react";
+import type L from "leaflet";
 
 export default function LeafletMap() {
-	const setMap = useMapStore((state) => state.setMap);
-	const getMapPosition = useMapStore((state) => state.getMapPosition);
+	const setCenter = useMapStore((state) => state.setCenter);
+	const setZoom = useMapStore((state) => state.setZoom);
+	const center = useMapStore((state) => state.center);
+	const zoom = useMapStore((state) => state.zoom);
 	const markers = useMapStore((state) => state.markers);
 
 	const mapRef = useRef<L.Map | null>(null);
 
-	const { center, zoom } = getMapPosition();
+	useEffect(() => {
+		const map = mapRef.current;
+		if (!map) return;
+
+		const handleMoveEnd = () => setCenter(map.getCenter());
+		const handleZoomEnd = () => setZoom(map.getZoom());
+
+		map.on("moveend", handleMoveEnd);
+		map.on("zoomend", handleZoomEnd);
+
+		return () => {
+			map.off("moveend", handleMoveEnd);
+			map.off("zoomend", handleZoomEnd);
+		};
+	}, [setCenter, setZoom]);
 
 	useEffect(() => {
-		if (mapRef.current) {
-			setMap(mapRef.current);
+		if (mapRef.current && center) {
+			mapRef.current.setView(center, mapRef.current.getZoom());
 		}
-	}, [setMap]);
+	}, [center]);
+
+	useEffect(() => {
+		if (mapRef.current && zoom) {
+			mapRef.current.setZoom(zoom);
+		}
+	}, [zoom]);
 
 	return (
 		<div className="h-full w-full">

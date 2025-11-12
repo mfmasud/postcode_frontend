@@ -1,13 +1,13 @@
 import { create } from "zustand";
 import type { LatLngExpression } from "leaflet";
 import type L from "leaflet";
+import { persist } from "zustand/middleware";
 
 type MapState = {
-  map: L.Map | null;
-  setMap: (m: L.Map) => void;
+  center: LatLngExpression;
+  zoom: number;
   setCenter: (c: LatLngExpression) => void;
   setZoom: (z: number) => void;
-  getMapPosition: () => { center: LatLngExpression; zoom: number };
   markers: Array<{
     position: LatLngExpression;
     popup?: string;
@@ -17,28 +17,23 @@ type MapState = {
   ) => void;
 };
 
-export const useMapStore = create<MapState>((set, get) => ({
-  map: null,
-  markers: [],
-  setMap: (m) => set({ map: m }),
-  setCenter: (c) => {
-    const map = get().map;
-    if (map) {
-      map.setView(c, map.getZoom());
+export const useMapStore = create<MapState>()(
+  persist(
+    (set, get) => ({
+      center: [51.505, -0.09],
+      zoom: 13,
+      markers: [],
+      setCenter: (c) => {
+        set({ center: c });
+      },
+      setZoom: (z) => {
+        set({ zoom: z });
+      },
+      setMarkers: (m) => set({ markers: m }),
+    }),
+    {
+      name: "map-storage",
+      partialize: (state) => ({ center: state.center, zoom: state.zoom }),
     }
-  },
-  setZoom: (z) => {
-    const map = get().map;
-    if (map) {
-      map.setZoom(z);
-    }
-  },
-  getMapPosition: () => {
-    const map = get().map;
-    if (map) {
-      return { center: map.getCenter(), zoom: map.getZoom() };
-    }
-    return { center: [51.505, -0.09], zoom: 13 }; // Default values
-  },
-  setMarkers: (m) => set({ markers: m }),
-}));
+  )
+);
