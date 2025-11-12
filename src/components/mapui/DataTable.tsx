@@ -111,6 +111,22 @@ export function DataTable({ data }: DataTableProps) {
 				),
 			}),
 			columnHelper.display({
+				id: "showHousePrices_external",
+				header: "View House Price Data",
+				cell: ({ row }) => {
+					const rawPostcode = row.original.postcode ?? "";
+					const postcode = rawPostcode.toLowerCase().trim().replace(/\s+/, "-"); // replaces first space between outcode & incode with a hyphen
+					const url = `https://www.rightmove.co.uk/house-prices/${postcode}.html`;
+					return (
+						<Button asChild variant="link">
+							<a href={url} target="_blank" rel="noopener noreferrer">
+								View
+							</a>
+						</Button>
+					);
+				},
+			}),
+			columnHelper.display({
 				id: "focusMap",
 				header: "Focus on Map",
 				cell: () => (
@@ -120,7 +136,7 @@ export function DataTable({ data }: DataTableProps) {
 				),
 			}),
 		],
-		[queryCrimes, queryStops, columnHelper], // Dependencies for useMemo
+		[queryCrimes, queryStops, columnHelper],
 	);
 
 	const table = useReactTable({

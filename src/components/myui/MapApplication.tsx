@@ -64,16 +64,9 @@ export default function MapApplication() {
 	}, [state.success, state.data, add, setMarkers, setCenter, setZoom]);
 
 	const itemsMap = useSearchStore((state) => state.items);
-	/*
-	for Object.values(itemsMap) (savedSearch) {
-		rows.append mapSearchResponseToRow(savedSearch)
-	}
-	const tabledata: DataTableRow[] = rows
-	*/
 	const tabledata: DataTableRow[] = Object.values(itemsMap).map((savedSearch) =>
 		mapSearchResponseToRow(savedSearch),
 	);
-	// Removed: const { center, zoom } = useMapStore();
 
 	return (
 		<div className="grid gap-6 grid-cols-1 lg:grid-cols-5">

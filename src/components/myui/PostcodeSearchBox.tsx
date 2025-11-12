@@ -44,7 +44,7 @@ export function PostcodeSearchBox({
 				</Button>
 			</form>
 			<div className="flex flex-col gap-2">
-				<p className="text-sm text-muted-foreground">Search suggestions:</p>
+				<p className="text-sm text-muted-foreground">Examples:</p>
 				<div className="flex gap-2 flex-wrap">
 					{SUGGESTED_SEARCHES.map((postcode) => (
 						<Button
