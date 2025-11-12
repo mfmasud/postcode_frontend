@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import type { LatLngExpression } from "leaflet";
-import type L from "leaflet";
 import { persist } from "zustand/middleware";
 
 type MapState = {
@@ -19,7 +18,7 @@ type MapState = {
 
 export const useMapStore = create<MapState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       center: [51.505, -0.09],
       zoom: 13,
       markers: [],
