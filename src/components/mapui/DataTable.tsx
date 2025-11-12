@@ -147,6 +147,7 @@ export function DataTable({ data }: DataTableProps) {
 		state: {
 			sorting,
 		},
+		getRowCanExpand: () => true,
 		getExpandedRowModel: getExpandedRowModel(),
 	});
 
