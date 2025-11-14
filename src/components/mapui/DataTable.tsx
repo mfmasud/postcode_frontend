@@ -33,6 +33,7 @@ export interface DataTableRow {
 	country: string;
 	crimes?: FrontendCrime[];
 	stops?: FrontendBusStop[];
+	createdAt: number;
 }
 
 type DataTableProps = {
@@ -142,6 +143,9 @@ export function DataTable({ data }: DataTableProps) {
 	const table = useReactTable({
 		data: data || [],
 		columns,
+		initialState: {
+			sorting: [{ id: "createdAt", desc: true }],
+		},
 		getCoreRowModel: getCoreRowModel(),
 		onSortingChange: setSorting,
 		state: {

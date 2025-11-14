@@ -15,7 +15,10 @@ import {
 	type searchByPostcodeState,
 } from "@/app/actions/SearchAction";
 
-import { useSearchStore } from "@/stores/searchStore";
+import {
+	useSearchStore,
+	type SearchResponseWithTimestamp,
+} from "@/stores/searchStore";
 import { mapSearchResponseToRow } from "@/lib/SearchDataTable";
 
 import { Card } from "@/components/ui/card";
@@ -63,9 +66,9 @@ export default function MapApplication() {
 		}
 	}, [state.success, state.data, add, setMarkers, setCenter, setZoom]);
 
-	const itemsMap = useSearchStore((state) => state.items);
-	const tabledata: DataTableRow[] = Object.values(itemsMap).map((savedSearch) =>
-		mapSearchResponseToRow(savedSearch),
+	const items = useSearchStore((state) => state.items);
+	const tabledata: DataTableRow[] = items.map(
+		(item: SearchResponseWithTimestamp) => mapSearchResponseToRow(item),
 	);
 
 	return (

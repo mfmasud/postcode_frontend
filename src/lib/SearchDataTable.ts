@@ -1,7 +1,10 @@
-import type { SearchResponse } from "@/schemas/search.schema";
 import type { DataTableRow } from "@/components/mapui/DataTable";
+import type { SearchResponseWithTimestamp } from "@/stores/searchStore";
 
-export function mapSearchResponseToRow(resp: SearchResponse): DataTableRow {
+export function mapSearchResponseToRow(
+  item: SearchResponseWithTimestamp
+): DataTableRow {
+  const { response: resp, createdAt } = item;
   const { metadata } = resp;
   const { Postcode } = metadata;
 
@@ -13,5 +16,6 @@ export function mapSearchResponseToRow(resp: SearchResponse): DataTableRow {
     country: Postcode.country,
     crimes: resp.queryCrimes ?? null,
     stops: resp.queryBusStops ?? null,
+    createdAt: createdAt,
   };
 }
