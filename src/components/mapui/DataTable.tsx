@@ -41,11 +41,6 @@ type DataTableProps = {
 };
 
 export function DataTable({ data }: DataTableProps) {
-	const queryCrimes =
-		data?.some((row) => row.crimes && row.crimes.length > 0) ?? false;
-	const queryStops =
-		data?.some((row) => row.stops && row.stops.length > 0) ?? false;
-
 	const [sorting, setSorting] = useState<SortingState>([]);
 
 	const columnHelper = createColumnHelper<DataTableRow>();
@@ -85,26 +80,55 @@ export function DataTable({ data }: DataTableProps) {
 			columnHelper.display({
 				id: "toggleNodes",
 				header: "Show Transport Nodes",
-				cell: () => (
-					<div className="align-middle">
-						<Checkbox disabled={!queryStops} /> Toggle Nodes
-					</div>
-				),
+				cell: ({ row }) => {
+					const hasStops =
+						(row.original.stops && row.original.stops.length > 0) ?? false;
+
+					return (
+						<div className="text-center">
+							{hasStops ? (
+								<>
+									<Checkbox />
+									{"Toggle Nodes"}
+								</>
+							) : (
+								<span className="text-muted-foreground font-medium">
+									{"No Data"}
+								</span>
+							)}
+						</div>
+					);
+				},
 			}),
 			columnHelper.display({
 				id: "toggleCrimes",
 				header: "Show Recent Crimes",
-				cell: () => (
-					<div className="">
-						<Checkbox disabled={!queryCrimes} /> Toggle Crimes
-					</div>
-				),
+				cell: ({ row }) => {
+					const hasCrimes =
+						(row.original.crimes && row.original.crimes.length > 0) ?? false;
+
+					return (
+						<div className="text-center">
+							{hasCrimes ? (
+								<>
+									<Checkbox />
+									{"Toggle Crimes"}
+								</>
+							) : (
+								<span className="text-muted-foreground font-medium">
+									No Data
+								</span>
+							)}
+						</div>
+					);
+				},
 			}),
+
 			columnHelper.display({
 				id: "viewData",
 				header: "View Postcode Data",
 				cell: ({ row }) => (
-					<div className="">
+					<div className="text-center">
 						<Button onClick={row.getToggleExpandedHandler()}>
 							{row.getIsExpanded() ? "Hide Details" : "Click to view"}
 						</Button>
@@ -121,7 +145,7 @@ export function DataTable({ data }: DataTableProps) {
 					return (
 						<Button asChild variant="link">
 							<a href={url} target="_blank" rel="noopener noreferrer">
-								View
+								View on Rightmove
 							</a>
 						</Button>
 					);
@@ -131,13 +155,13 @@ export function DataTable({ data }: DataTableProps) {
 				id: "focusMap",
 				header: "Focus on Map",
 				cell: () => (
-					<div className="">
+					<div className="text-center">
 						<Button>Focus</Button>
 					</div>
 				),
 			}),
 		],
-		[queryCrimes, queryStops, columnHelper],
+		[columnHelper],
 	);
 
 	const table = useReactTable({
@@ -167,9 +191,9 @@ export function DataTable({ data }: DataTableProps) {
 	return (
 		<div className="rounded-md border">
 			<Table>
-				<TableHeader>
+				<TableHeader className="bg-background ">
 					{table.getHeaderGroups().map((headerGroup) => (
-						<TableRow key={headerGroup.id}>
+						<TableRow key={headerGroup.id} className="divide-x">
 							{headerGroup.headers.map((header) => (
 								<TableHead key={header.id}>
 									{header.isPlaceholder
@@ -186,7 +210,10 @@ export function DataTable({ data }: DataTableProps) {
 				<TableBody>
 					{table.getRowModel().rows.map((row) => (
 						<React.Fragment key={row.id}>
-							<TableRow key={row.id}>
+							<TableRow
+								key={row.id}
+								className="divide-x odd:bg-secondary even:bg-background"
+							>
 								{row.getVisibleCells().map((cell) => (
 									<TableCell key={cell.id}>
 										{flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -196,27 +223,30 @@ export function DataTable({ data }: DataTableProps) {
 							{row.getIsExpanded() && (
 								<TableRow>
 									<TableCell colSpan={columns.length}>
-										<div className="p-4">
-											{row.original.crimes && (
-												<div>
-													<h4 className="font-semibold">Crimes:</h4>
-													<pre className="whitespace-pre-wrap text-sm">
-														{JSON.stringify(row.original.crimes, null, 2)}
-													</pre>
-												</div>
-											)}
-											{row.original.stops && (
-												<div className="mt-4">
-													<h4 className="font-semibold">Transport Stops:</h4>
-													<pre className="whitespace-pre-wrap text-sm">
-														{JSON.stringify(row.original.stops, null, 2)}
-													</pre>
-												</div>
-											)}
-											{!row.original.crimes && !row.original.stops && (
+										{row.original.crimes && row.original.crimes.length > 0 && (
+											<div>
+												<h4 className="font-semibold">Crimes:</h4>
+												<pre className="whitespace-pre-wrap text-sm">
+													{JSON.stringify(row.original.crimes, null, 2)}
+												</pre>
+											</div>
+										)}
+
+										{row.original.stops && row.original.stops.length > 0 && (
+											<div className="mt-4">
+												<h4 className="font-semibold">Transport Stops:</h4>
+												<pre className="whitespace-pre-wrap text-sm">
+													{JSON.stringify(row.original.stops, null, 2)}
+												</pre>
+											</div>
+										)}
+
+										{(!row.original.crimes ||
+											row.original.crimes.length === 0) &&
+											(!row.original.stops ||
+												row.original.stops.length === 0) && (
 												<p>No additional data available for this postcode.</p>
 											)}
-										</div>
 									</TableCell>
 								</TableRow>
 							)}
