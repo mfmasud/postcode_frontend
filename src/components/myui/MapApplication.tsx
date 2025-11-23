@@ -19,12 +19,12 @@ import {
 	useSearchStore,
 	type SearchResponseWithTimestamp,
 } from "@/stores/searchStore";
+import { useMapStore } from "@/stores/mapStore";
 import { mapSearchResponseToRow } from "@/lib/SearchDataTable";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Database } from "lucide-react";
-import { useMapStore } from "@/stores/mapStore";
 
 const initialState: searchByPostcodeState = {
 	success: false,
@@ -73,9 +73,9 @@ export default function MapApplication() {
 
 	return (
 		<div className="flex flex-col">
-			<div className="grid gap-6 grid-cols-1 lg:grid-cols-6">
+			<div className="grid gap-6 grid-cols-1 lg:grid-cols-7">
 				{/* Sidebar */}
-				<aside className="space-y-4 col-span-1 lg:col-span-2">
+				<aside className="col-span-1 lg:col-span-2">
 					<Card>
 						<CardHeader>
 							<CardTitle className="flex items-center gap-2">
@@ -94,7 +94,7 @@ export default function MapApplication() {
 					</Card>
 				</aside>
 				{/* Main Content */}
-				<div className="space-y-6 col-span-1 lg:col-span-4">
+				<div className="space-y-6 col-span-1 lg:col-span-5">
 					<Card className="h-[500px] overflow-hidden p-1">
 						<Suspense
 							fallback={
@@ -109,8 +109,8 @@ export default function MapApplication() {
 				</div>
 
 				{/* Location Table */}
-				<div className="col-span-1 lg:col-span-6">
-					<Card className="p-6">
+				<div className="col-span-1 lg:col-span-7">
+					<Card className="p-4">
 						<h2 className="text-xl font-semibold mb-4">Location Data</h2>
 						<Suspense
 							fallback={
