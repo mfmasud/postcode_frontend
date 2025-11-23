@@ -21,7 +21,7 @@ import {
 } from "@/stores/searchStore";
 import { mapSearchResponseToRow } from "@/lib/SearchDataTable";
 
-import { Card } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Database } from "lucide-react";
 import { useMapStore } from "@/stores/mapStore";
@@ -75,18 +75,21 @@ export default function MapApplication() {
 		<div className="grid gap-6 grid-cols-1 lg:grid-cols-5">
 			{/* Sidebar */}
 			<aside className="space-y-4 col-span-1">
-				<Card className="p-4 flex flex-col">
-					<h2 className="font-semibold mb-4 flex items-center gap-2">
-						<Database className="h-4 w-4" />
-						Data Controls
-					</h2>
-					<div>
+				<Card>
+					<CardHeader>
+						<CardTitle className="flex items-center gap-2">
+							<Database className="h-4 w-4" />
+							Data Controls
+						</CardTitle>
+					</CardHeader>
+
+					<CardContent>
 						<PostcodeSearchBox
 							formAction={formAction}
 							isPending={isPending}
 							defaultValue={state.entered_postcode ?? ""}
 						/>
-					</div>
+					</CardContent>
 				</Card>
 			</aside>
 
