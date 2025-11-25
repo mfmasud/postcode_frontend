@@ -26,6 +26,7 @@ import { useUiStore } from "@/stores/uiStore";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Database } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const initialState: searchByPostcodeState = {
 	success: false,
@@ -79,26 +80,53 @@ export default function MapApplication() {
 			<div className="grid gap-6 grid-cols-1 lg:grid-cols-7">
 				{/* Sidebar */}
 				<aside className="col-span-1 lg:col-span-2">
-					<Card>
-						<CardHeader>
-							<CardTitle className="flex items-center gap-2">
-								<Database className="h-4 w-4" />
-								Data Controls
-							</CardTitle>
-						</CardHeader>
+					<div className="flex flex-col gap-4">
+						<Card>
+							<CardHeader>
+								<CardTitle className="flex items-center gap-2">
+									<Database className="h-4 w-4" />
+									Data Controls
+								</CardTitle>
+							</CardHeader>
 
-						<CardContent>
-							<PostcodeSearchBox
-								formAction={formAction}
-								isPending={isPending}
-								defaultValue={state.entered_postcode ?? ""}
-							/>
-						</CardContent>
-					</Card>
+							<CardContent>
+								<PostcodeSearchBox
+									formAction={formAction}
+									isPending={isPending}
+									defaultValue={state.entered_postcode ?? ""}
+								/>
+							</CardContent>
+						</Card>
+						<Card>
+							<CardHeader>
+								<CardTitle className="flex items-center gap-2">
+									<Database className="h-4 w-4" />
+									Map Controls
+								</CardTitle>
+							</CardHeader>
+							<CardContent className="flex flex-col gap-2">
+								<Button
+									variant="outline"
+									className="w-full"
+									onClick={toggleAllStops}
+								>
+									Show All Stops
+								</Button>
+								<Button
+									variant="outline"
+									className="w-full"
+									onClick={toggleAllCrimes}
+								>
+									Show All Crimes
+								</Button>
+							</CardContent>
+						</Card>
+					</div>
 				</aside>
+
 				{/* Main Content */}
 				<div className="space-y-6 col-span-1 lg:col-span-5">
-					<Card className="h-[500px] overflow-hidden p-1">
+					<Card className="h-[500px] lg:min-w-[680px] overflow-hidden p-1">
 						<Suspense
 							fallback={
 								<div className="flex items-center justify-center bg-muted/20">
@@ -114,16 +142,27 @@ export default function MapApplication() {
 				{/* Location Table */}
 				<div className="col-span-1 lg:col-span-7">
 					<Card className="p-4">
-						<h2 className="text-xl font-semibold mb-4">Location Data</h2>
-						<Suspense
-							fallback={
-								<div className="flex items-center justify-center py-8">
-									<Spinner className="h-6 w-6" />
-								</div>
-							}
-						>
-							<DataTable data={tabledata} />
-						</Suspense>
+						<CardHeader className="text-xl font-semibold mb-4">
+							Location Data
+							<Button
+								variant="outline"
+								className="w-full"
+								onClick={clearSearchStore}
+							>
+								Clear All Data
+							</Button>
+						</CardHeader>
+						<CardContent>
+							<Suspense
+								fallback={
+									<div className="flex items-center justify-center py-8">
+										<Spinner className="h-6 w-6" />
+									</div>
+								}
+							>
+								<DataTable data={tabledata} />
+							</Suspense>
+						</CardContent>
 					</Card>
 				</div>
 			</div>
