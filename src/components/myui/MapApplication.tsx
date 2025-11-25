@@ -21,6 +21,7 @@ import {
 } from "@/stores/searchStore";
 import { useMapStore } from "@/stores/mapStore";
 import { mapSearchResponseToRow } from "@/lib/SearchDataTable";
+import { useUiStore } from "@/stores/uiStore";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
@@ -41,6 +42,8 @@ export default function MapApplication() {
 
 	const { add } = useSearchStore();
 	const { setCenter, setZoom, setMarkers } = useMapStore();
+	const clearSearchStore = useSearchStore((state) => state.clear);
+	const { toggleAllStops, toggleAllCrimes } = useUiStore();
 
 	useEffect(() => {
 		if (state.success && state.data) {
