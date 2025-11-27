@@ -99,6 +99,20 @@ export const useSearchStore = create<SearchStore>()(
         },
       }),
       version: 2,
+      migrate: (persistedState: unknown, version) => {
+        const state = persistedState as SearchStore;
+        if (version < 2) {
+          // Add 'hidden: false' to all elements in the existing data
+          return {
+            ...state,
+            items: state.items.map((item) => ({
+              ...item,
+              hidden: item.hidden ?? false,
+            })),
+          };
+        }
+        return state;
+      },
     }
   )
 );
