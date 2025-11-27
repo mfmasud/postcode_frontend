@@ -4,17 +4,21 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { SearchResponse } from "@/schemas/search.schema";
 
-export interface SearchResponseWithTimestamp {
+export interface SearchResponseWithMetadata {
   response: SearchResponse;
   createdAt: number;
+  hidden: boolean;
 }
 
 type SearchStore = {
-  items: SearchResponseWithTimestamp[];
+  items: SearchResponseWithMetadata[];
 
   add: (resp: SearchResponse) => void;
   remove: (searchID: number) => void;
   clear: () => void;
+  hide: (searchID: number) => void;
+  unhide: (searchID: number) => void;
+  unhideAll: () => void;
 };
 
 export const useSearchStore = create<SearchStore>()(
@@ -34,12 +38,13 @@ export const useSearchStore = create<SearchStore>()(
             return state; // Return current state without modification
           }
 
-          const newItem: SearchResponseWithTimestamp = {
+          const newItem: SearchResponseWithMetadata = {
             response: resp,
             createdAt: Date.now(),
+            hidden: false,
           };
           const newItems = [newItem, ...state.items];
-          if (newItems.length > 8) {
+          if (newItems.length > 20) {
             newItems.pop(); // Remove the oldest item
           }
           return { items: newItems };
@@ -55,7 +60,34 @@ export const useSearchStore = create<SearchStore>()(
       },
 
       clear: () => set({ items: [] }),
+
+      hide: (searchID: number) => {
+        set((state) => ({
+          items: state.items.map((item) =>
+            item.response.metadata.searchID === searchID
+              ? { ...item, hidden: true }
+              : item
+          ),
+        }));
+      },
+
+      unhide: (searchID: number) => {
+        set((state) => ({
+          items: state.items.map((item) =>
+            item.response.metadata.searchID === searchID
+              ? { ...item, hidden: false }
+              : item
+          ),
+        }));
+      },
+
+      unhideAll: () => {
+        set((state) => ({
+          items: state.items.map((item) => ({ ...item, hidden: false })),
+        }));
+      },
     }),
+
     {
       name: "postcode-searches", // localStorage key
       storage: createJSONStorage(() => localStorage, {
@@ -66,7 +98,7 @@ export const useSearchStore = create<SearchStore>()(
           return value;
         },
       }),
-      version: 1,
+      version: 2,
     }
   )
 );

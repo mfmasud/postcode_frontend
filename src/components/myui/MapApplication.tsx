@@ -17,7 +17,7 @@ import {
 
 import {
 	useSearchStore,
-	type SearchResponseWithTimestamp,
+	type SearchResponseWithMetadata,
 } from "@/stores/searchStore";
 import { useMapStore } from "@/stores/mapStore";
 import { mapSearchResponseToRow } from "@/lib/SearchDataTable";
@@ -72,7 +72,7 @@ export default function MapApplication() {
 
 	const items = useSearchStore((state) => state.items);
 	const tabledata: DataTableRow[] = items.map(
-		(item: SearchResponseWithTimestamp) => mapSearchResponseToRow(item),
+		(item: SearchResponseWithMetadata) => mapSearchResponseToRow(item),
 	);
 
 	return (

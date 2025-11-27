@@ -34,6 +34,7 @@ export interface DataTableRow {
 	crimes?: FrontendCrime[];
 	stops?: FrontendBusStop[];
 	createdAt: number;
+	hidden: boolean;
 }
 
 type DataTableProps = {
@@ -123,7 +124,6 @@ export function DataTable({ data }: DataTableProps) {
 					);
 				},
 			}),
-
 			columnHelper.display({
 				id: "viewData",
 				header: "View Postcode Data",
