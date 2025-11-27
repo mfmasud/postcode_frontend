@@ -7,7 +7,7 @@ const LeafletMap = dynamic(() => import("../mapui/LeafletMap"), {
 	ssr: false,
 });
 
-import { DataTable, type DataTableRow } from "@/components/mapui/DataTable";
+import { DataTable } from "@/components/mapui/DataTable";
 import { PostcodeSearchBox } from "./PostcodeSearchBox";
 
 import {
@@ -15,13 +15,12 @@ import {
 	type searchByPostcodeState,
 } from "@/app/actions/SearchAction";
 
-import {
-	useSearchStore,
-	type SearchResponseWithMetadata,
-} from "@/stores/searchStore";
+import { useShallow } from "zustand/react/shallow";
+import { useSearchStore } from "@/stores/searchStore";
 import { useMapStore } from "@/stores/mapStore";
-import { mapSearchResponseToRow } from "@/lib/SearchDataTable";
 import { useUiStore } from "@/stores/uiStore";
+
+import { mapSearchResponseToRow } from "@/lib/SearchDataTable";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
@@ -70,9 +69,12 @@ export default function MapApplication() {
 		}
 	}, [state.success, state.data, add, setMarkers, setCenter, setZoom]);
 
-	const items = useSearchStore((state) => state.items);
-	const tabledata: DataTableRow[] = items.map(
-		(item: SearchResponseWithMetadata) => mapSearchResponseToRow(item),
+	const tabledata = useSearchStore(
+		useShallow((state) =>
+			state.items
+				.filter((i) => !i.hidden)
+				.map((item) => mapSearchResponseToRow(item)),
+		),
 	);
 
 	return (
