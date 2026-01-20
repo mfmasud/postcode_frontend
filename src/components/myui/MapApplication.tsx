@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useActionState, useEffect } from "react";
+import { Suspense, useActionState, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
 
 const LeafletMap = dynamic(() => import("../mapui/LeafletMap"), {
@@ -15,7 +15,6 @@ import {
 	type searchByPostcodeState,
 } from "@/app/actions/SearchAction";
 
-import { useShallow } from "zustand/react/shallow";
 import { useSearchStore } from "@/stores/searchStore";
 import { useMapStore } from "@/stores/mapStore";
 import { useUiStore } from "@/stores/uiStore";
@@ -69,12 +68,10 @@ export default function MapApplication() {
 		}
 	}, [state.success, state.data, add, setMarkers, setCenter, setZoom]);
 
-	const tabledata = useSearchStore(
-		useShallow((state) =>
-			state.items
-				.filter((i) => !i.hidden)
-				.map((item) => mapSearchResponseToRow(item)),
-		),
+	const items = useSearchStore((state) => state.items);
+	const tabledata = useMemo(
+		() => items.filter((i) => !i.hidden).map((item) => mapSearchResponseToRow(item)),
+		[items]
 	);
 
 	return (
