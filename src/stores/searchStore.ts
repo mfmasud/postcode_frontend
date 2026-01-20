@@ -28,14 +28,20 @@ export const useSearchStore = create<SearchStore>()(
 
       add: (resp) => {
         set((state) => {
-          // Skip adding if a duplicate searchID is found
-          if (
-            state.items.some(
-              (item) =>
-                item.response.metadata.searchID === resp.metadata.searchID
-            )
-          ) {
-            return state; // Return current state without modification
+          const existingItemIndex = state.items.findIndex(
+            (item) => item.response.metadata.searchID === resp.metadata.searchID
+          );
+
+          if (existingItemIndex > -1) {
+            // If a duplicate searchID is found, unhide it and move to top
+            const updatedItems = [...state.items];
+            const [foundItem] = updatedItems.splice(existingItemIndex, 1);
+            const newItem = {
+              ...foundItem,
+              hidden: false,
+              createdAt: Date.now(),
+            }; // Update createdAt to bring to top
+            return { items: [newItem, ...updatedItems] };
           }
 
           const newItem: SearchResponseWithMetadata = {
