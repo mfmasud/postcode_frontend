@@ -4,7 +4,18 @@ import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useMapStore } from "@/stores/mapStore";
 import { useRef, useEffect } from "react";
+
 import type L from "leaflet";
+import { Icon } from "leaflet";
+
+const defaultIcon = new Icon({
+	iconUrl: "/leaflet/images/marker-icon.png",
+	shadowUrl: "/leaflet/images/marker-shadow.png",
+	iconSize: [25, 41],
+	iconAnchor: [12, 41],
+	popupAnchor: [1, -34],
+	shadowSize: [41, 41],
+});
 
 export default function LeafletMap() {
 	const setCenter = useMapStore((state) => state.setCenter);
@@ -56,7 +67,11 @@ export default function LeafletMap() {
 					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 				/>
 				{markers.map((marker) => (
-					<Marker key={marker.position.toString()} position={marker.position}>
+					<Marker
+						key={marker.position.toString()}
+						icon={defaultIcon}
+						position={marker.position}
+					>
 						{marker.popup && <Popup>{marker.popup}</Popup>}
 					</Marker>
 				))}
