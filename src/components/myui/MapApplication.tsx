@@ -180,11 +180,16 @@ export default function MapApplication() {
 			)}
 
 			{state?.success === true && state.data !== undefined && (
-				<div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded col-span-5">
-					<p className="font-semibold mb-2">Success</p>
-					<pre className="bg-white p-4 rounded overflow-x-auto text-gray-800">
-						{JSON.stringify(state.data as Record<string, unknown>, null, 2)}
-					</pre>
+				<div className="mt-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded col-span-5">
+					<p className="font-semibold">Success</p>
+					<details className="mt-2">
+						<summary className="cursor-pointer font-medium">
+							Show raw JSON
+						</summary>
+						<pre className="bg-white p-4 mt-2 max-h-80 overflow-auto rounded text-gray-800">
+							{JSON.stringify(state.data as Record<string, unknown>, null, 2)}
+						</pre>
+					</details>
 				</div>
 			)}
 		</div>
