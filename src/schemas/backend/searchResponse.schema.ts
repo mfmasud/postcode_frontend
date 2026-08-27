@@ -63,8 +63,14 @@ export const BusStopResponseSchema = z.object({
     .describe("Street name where the bus stop is located"),
   Longitude: z.string().optional().describe("Longitude coordinate as string"),
   Latitude: z.string().optional().describe("Latitude coordinate as string"),
-  Northing: z.string().describe("British National Grid Northing coordinate"),
-  Easting: z.string().describe("British National Grid Easting coordinate"),
+  Northing: z
+    .string()
+    .optional()
+    .describe("British National Grid Northing coordinate, when available"),
+  Easting: z
+    .string()
+    .optional()
+    .describe("British National Grid Easting coordinate, when available"),
   __v: z.number().optional().describe("Mongoose version key"),
 });
 
