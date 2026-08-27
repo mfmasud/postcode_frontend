@@ -23,6 +23,8 @@ import type {
 	FrontendBusStop,
 	FrontendCrime,
 } from "@/schemas/frontend/searchPage.schema";
+import { useMapStore } from "@/stores/mapStore";
+import { useUiStore } from "@/stores/uiStore";
 import React from "react";
 
 export interface DataTableRow {
@@ -41,10 +43,18 @@ type DataTableProps = {
 	data: DataTableRow[] | null;
 };
 
+const columnHelper = createColumnHelper<DataTableRow>();
+
 export function DataTable({ data }: DataTableProps) {
 	const [sorting, setSorting] = useState<SortingState>([]);
-
-	const columnHelper = createColumnHelper<DataTableRow>();
+	const setCenter = useMapStore((state) => state.setCenter);
+	const setZoom = useMapStore((state) => state.setZoom);
+	const showAllStops = useUiStore((state) => state.showAllStops);
+	const stopVisibility = useUiStore((state) => state.stopVisibility);
+	const toggleStops = useUiStore((state) => state.toggleStops);
+	const showAllCrimes = useUiStore((state) => state.showAllCrimes);
+	const crimeVisibility = useUiStore((state) => state.crimeVisibility);
+	const toggleCrimes = useUiStore((state) => state.toggleCrimes);
 
 	const columns = useMemo(
 		() => [
@@ -84,14 +94,19 @@ export function DataTable({ data }: DataTableProps) {
 				cell: ({ row }) => {
 					const hasStops =
 						(row.original.stops && row.original.stops.length > 0) ?? false;
+					const isVisible =
+						stopVisibility[row.original.id] ?? showAllStops;
 
 					return (
 						<div className="text-center">
 							{hasStops ? (
-								<>
-									<Checkbox />
-									{"Toggle Nodes"}
-								</>
+								<label className="inline-flex cursor-pointer items-center gap-2">
+									<Checkbox
+										checked={isVisible}
+										onCheckedChange={() => toggleStops(row.original.id)}
+									/>
+									<span>{isVisible ? "Shown" : "Hidden"}</span>
+								</label>
 							) : (
 								<span className="text-muted-foreground font-medium">
 									{"No Data"}
@@ -107,14 +122,19 @@ export function DataTable({ data }: DataTableProps) {
 				cell: ({ row }) => {
 					const hasCrimes =
 						(row.original.crimes && row.original.crimes.length > 0) ?? false;
+					const isVisible =
+						crimeVisibility[row.original.id] ?? showAllCrimes;
 
 					return (
 						<div className="text-center">
 							{hasCrimes ? (
-								<>
-									<Checkbox />
-									{"Toggle Crimes"}
-								</>
+								<label className="inline-flex cursor-pointer items-center gap-2">
+									<Checkbox
+										checked={isVisible}
+										onCheckedChange={() => toggleCrimes(row.original.id)}
+									/>
+									<span>{isVisible ? "Shown" : "Hidden"}</span>
+								</label>
 							) : (
 								<span className="text-muted-foreground font-medium">
 									No Data
@@ -154,14 +174,30 @@ export function DataTable({ data }: DataTableProps) {
 			columnHelper.display({
 				id: "focusMap",
 				header: "Focus on Map",
-				cell: () => (
+				cell: ({ row }) => (
 					<div className="text-center">
-						<Button>Focus</Button>
+						<Button
+							onClick={() => {
+								setCenter([row.original.lat, row.original.long]);
+								setZoom(13);
+							}}
+						>
+							Focus
+						</Button>
 					</div>
 				),
 			}),
 		],
-		[columnHelper],
+		[
+			crimeVisibility,
+			setCenter,
+			setZoom,
+			showAllCrimes,
+			showAllStops,
+			stopVisibility,
+			toggleCrimes,
+			toggleStops,
+		],
 	);
 
 	const table = useReactTable({

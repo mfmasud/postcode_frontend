@@ -42,7 +42,12 @@ export default function MapApplication() {
 	const { add } = useSearchStore();
 	const { setCenter, setZoom, setMarkers } = useMapStore();
 	const clearSearchStore = useSearchStore((state) => state.clear);
-	const { toggleAllStops, toggleAllCrimes } = useUiStore();
+	const {
+		showAllStops,
+		toggleAllStops,
+		showAllCrimes,
+		toggleAllCrimes,
+	} = useUiStore();
 
 	useEffect(() => {
 		if (state.success && state.data) {
@@ -71,7 +76,7 @@ export default function MapApplication() {
 	const items = useSearchStore((state) => state.items);
 	const tabledata = useMemo(
 		() => items.filter((i) => !i.hidden).map((item) => mapSearchResponseToRow(item)),
-		[items]
+		[items],
 	);
 
 	return (
@@ -108,15 +113,17 @@ export default function MapApplication() {
 									variant="outline"
 									className="w-full"
 									onClick={toggleAllStops}
+									aria-pressed={showAllStops}
 								>
-									Show All Stops
+									{showAllStops ? "Hide All Stops" : "Show All Stops"}
 								</Button>
 								<Button
 									variant="outline"
 									className="w-full"
 									onClick={toggleAllCrimes}
+									aria-pressed={showAllCrimes}
 								>
-									Show All Crimes
+									{showAllCrimes ? "Hide All Crimes" : "Show All Crimes"}
 								</Button>
 							</CardContent>
 						</Card>
